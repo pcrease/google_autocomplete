@@ -7,7 +7,7 @@ import json
 import time
 import codecs
 
-in_file = 'countries.txt'
+in_file = 'google_autocomplete/data_sources/countries.txt'
 sep = ','
 iso_field = 'iso_a3'
 name_field = 'admin'
