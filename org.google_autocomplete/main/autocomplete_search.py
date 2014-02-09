@@ -7,8 +7,8 @@ import json
 import time
 import codecs
 import os
-from nltk.corpus import stopwords
-
+import nltk
+customstopwords = ['why', 'are', 'so', 'the', 'is', 'were']
 
 dir = os.path.split(os.path.dirname(__file__))
 
@@ -26,6 +26,9 @@ out_file = os.path.join(dir[0], 'data_sources/country_stereotypes_results.txt')
 # API endpoint
 google_endpoint = 'http://google.com/complete/search?output=firefox&q='
 
+sentiment_filepath=os.path.join(dir[0], 'data_sources/AFINN-111.txt')
+sentiment_dictionary = dict(map(lambda (k,v): (k,int(v)), 
+                     [ line.split('\t') for line in open(sentiment_filepath) ]))
 
 def find_index(fieldname, in_file):
     ''' Given a field (column) name, this function finds the index of a field
@@ -60,7 +63,7 @@ def build_nationality_phrase(nationality):
     ''' Given a country name and <plural>, <definite> flag, this function 
     assembles the search query '''
 
-    phrase = 'why are'
+    phrase = 'why are the'
     print u'%s %s so ' % (phrase, nationality)
     return u'%s %s so ' % (phrase, nationality)
 
@@ -82,6 +85,7 @@ plural_idx = find_index(plural_field, in_file)
 definite_idx = find_index(definite_field, in_file)
 nationality_idx = find_index(nationality_field,in_file)
 
+
 with codecs.open(in_file, 'r', 'utf-8') as f:
 
     with codecs.open(out_file, 'w', 'utf-8') as f_out:
@@ -98,20 +102,29 @@ with codecs.open(in_file, 'r', 'utf-8') as f:
             plural = items[plural_idx]
             definite = items[definite_idx]
             nationality=items[nationality_idx]
-            print stopwords.words('english')
                         
             phrase = build_nationality_phrase(nationality)
             try:
                 results = query_google(phrase)
-                
+                #print results
                 
                 if len(results) > 0:
                     for result in results:
-                        filtered_words = [w for w in result if not w in stopwords.words('english')]
-                        
-                        f_out.write('%s\t%s\t%s\n' % (iso, nationality, result))
+                        #filtered_words = [w for w in result if not w in stopwords.words('english')]
+                        filtered_words = [i for i in nltk.word_tokenize(result) if not i in customstopwords]
+                        posVal=0;
+                        negVal=0
+                        for word in filtered_words:
+                            sentimentVal= sentiment_dictionary.get(word)
+                            if sentimentVal>0:
+                                posVal+=sentimentVal
+                            if sentimentVal<0:
+                                negVal+=sentimentVal
+                            
+                        f_out.write('%s\t%s\t%s\t%s\t%s\n' % (iso, nationality, filtered_words,posVal,negVal))
                 else:
                     f_out.write('%s\t%s\t\n' % (iso, nationality))
             except:
                 f_out.write('%s\t%s\t\n' % (iso, nationality))
+
 
