@@ -21,7 +21,9 @@ plural_field = 'plural'
 definite_field = 'definite'
 nationality_field='nationalities'
 
-out_file = os.path.join(dir[0], 'data_sources/country_stereotypes_results.txt')
+phrase = 'why are the'
+
+out_file = os.path.join(dir[0], 'data_sources/'+phrase+'_country_stereotypes_results.txt')
 
 # API endpoint
 google_endpoint = 'http://google.com/complete/search?output=firefox&q='
@@ -45,27 +47,14 @@ def find_index(fieldname, in_file):
             return -1
 
 
-def build_phrase(name, plural, definite):
-    ''' Given a country name and <plural>, <definite> flag, this function 
-    assembles the search query '''
-
-    if plural == '1':
-        phrase = u'why are'
-    else:
-        phrase = u'why is'
-    
-    if definite == '1':
-        phrase = u'%s the' % phrase
-
-    return u'%s %s so ' % (phrase, name)
 
 def build_nationality_phrase(nationality):
     ''' Given a country name and <plural>, <definite> flag, this function 
     assembles the search query '''
 
-    phrase = 'why are the'
-    print u'%s %s so ' % (phrase, nationality)
-    return u'%s %s so ' % (phrase, nationality)
+
+    print u'%s %s so' % (phrase, nationality)
+    return u'%s %s so' % (phrase, nationality)
 
 
 def query_google(phrase):

@@ -1,0 +1,14 @@
+iso	name	term
+AFG	Afghans	
+ALA	Alandish	
+ALB	Albanians	
+DZA	Algerians	
+ASM	American Samoans	
+AND	Andorrans	
+AGO	Angolans	
+AIA	Anguillans	
+ATG	Antiguans	
+ARG	Argentines	
+ARM	Armenians	
+ABW	Arubans	
+-99	Ashmore and Cartier Islanders	
